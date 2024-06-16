@@ -1,5 +1,6 @@
 package model.dao;
 
+import model.dto.CreateProductDto;
 import model.entity.Product;
 
 import java.sql.*;
@@ -46,7 +47,7 @@ public class ProductDaoImpl implements ProductDao{
     }
 
     @Override
-    public int addNewProduct(Product product) {
+    public int addNewProduct(CreateProductDto product) {
         String sql = """
                 INSERT INTO "product"(id,product_name,product_code,is_deleted,imported_at,expired_at,product_description)
                 VALUES(?,?,?,?,?,?,?)
@@ -59,13 +60,13 @@ public class ProductDaoImpl implements ProductDao{
                 );
                 PreparedStatement pre = connection.prepareStatement(sql)
                 ){
-                pre.setInt(1, product.getId());
-                pre.setString(2,product.getProductName());
-                pre.setString(3,product.getProductCode());
-                pre.setBoolean(4,product.getIsDeleted());
-                pre.setDate(5,product.getImportedDate());
-                pre.setDate(6,product.getExpiredDate());
-                pre.setString(7,product.getProductDescription());
+                pre.setInt(1, product.product_id());
+                pre.setString(2, product.product_name());
+                pre.setString(3,product.product_code());
+                pre.setBoolean(4,product.product_isDeleted());
+                pre.setDate(5, product.product_importedDate());
+                pre.setDate(6,product.product_expiredDate());
+                pre.setString(7,product.product_description());
                 int rowsAffected = pre.executeUpdate();
                 if(rowsAffected>0){
                     System.out.println(" Successfully insert product");
@@ -135,13 +136,13 @@ public class ProductDaoImpl implements ProductDao{
                     return 0;
                 }else{
                     System.out.print("[+] Insert product name :");
-                    pre.setString(1,new Scanner(System.in).next());
+                    pre.setString(1,new Scanner(System.in).nextLine());
 
                     System.out.print("[+] Insert product code :");
-                    pre.setString(2,new Scanner(System.in).next());
+                    pre.setString(2,new Scanner(System.in).nextLine());
 
                     System.out.print("[+] Insert product description :");
-                    pre.setString(3 ,new Scanner(System.in).next());
+                    pre.setString(3 ,new Scanner(System.in).nextLine());
 
                     pre.setInt(4,id);
                     int rowsAffected = pre.executeUpdate();
