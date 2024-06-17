@@ -1,5 +1,6 @@
 package model.dao;
 
+import model.dto.OrderDto;
 import model.entity.Customer;
 import model.entity.Order;
 import model.entity.Product;
@@ -12,7 +13,7 @@ import java.util.Scanner;
 public class OrderDaoImpl implements OrderDao{
 
     @Override
-    public int addNewOrder(Order order) {
+    public List<OrderDao> addNewOrder(OrderDto order) {
         String sql = """
                 INSERT INTO  "order" (id,order_name,order_description,cus_id,ordered_at)
                 VALUES (?,?,?,?,?)
@@ -32,15 +33,23 @@ public class OrderDaoImpl implements OrderDao{
                 PreparedStatement pre1 = con.prepareStatement(sql1);
                 Statement st = con.createStatement();
                 ){
-            pre.setInt(1,order.getId());
-            pre.setString(2,order.getOrderName());
-            pre.setString(3,order.getOrderDescription());
-            pre.setInt(4,order.getCustomer().getId());
-            pre.setDate(5,order.getOrderedAt());
+            pre.setInt(1,order.id());
+            pre.setString(2,order.order_name());
+            pre.setString(3,order.order_description());
+            pre.setInt(4,order.cus_id().getId());
+            pre.setDate(5,order.ordered_at());
             // Product  order
+//            int orderId = -1;
+//            if(con.getMetaData().supportsGetGeneratedKeys()){
+//                ResultSet rs = pre.executeQuery();
+//                if(rs.next()){
+//                    orderId = rs.getInt(1);
+//                }
+//                rs.close();
+//            }
             for(Product product :order.getProductList()){
                 pre1.setInt(1,product.getId());
-                pre1.setInt(2,order.getId());
+                pre1.setInt(2, order.cus_id().getId());
             }
             int rowsAffectd = pre.executeUpdate();
             int rowsAffected1 = pre1.executeUpdate();
@@ -49,7 +58,7 @@ public class OrderDaoImpl implements OrderDao{
         }catch (Exception e){
             System.out.println(e.getMessage());
         }
-        return 0;
+        return new ArrayList<>();
     }
 
     @Override
@@ -172,7 +181,7 @@ public class OrderDaoImpl implements OrderDao{
     }
 
     @Override
-    public int deleteOrerById(Integer id) {
+    public List<OrderDto> deleteOrerById(Integer id) {
         String sql = """
                 DELETE FROM "order"
                 WHERE id = ?
@@ -193,12 +202,11 @@ public class OrderDaoImpl implements OrderDao{
                  int rowsAffected = pre.executeUpdate();
                  String message1 = rowsAffected > 0 ? "Delete Successfully " : " Cannot Delete ";
                  System.out.println(message1);
-                 return  rowsAffected;
              }
 
         }catch(SQLException e){
             System.out.println(e.getMessage());
         }
-        return 0;
+        return new ArrayList<>();
     }
 }

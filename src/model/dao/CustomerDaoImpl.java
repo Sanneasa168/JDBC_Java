@@ -1,4 +1,5 @@
 package model.dao;
+import model.dto.CreateCustomerDto;
 import model.entity.Customer;
 import java.sql.*;
 import java.util.ArrayList;
@@ -115,7 +116,7 @@ public class CustomerDaoImpl implements CustomerDao{
     }
 
     @Override
-    public int addNewCustomer(Customer customer) {
+    public int addNewCustomer(CreateCustomerDto customer) {
         String sql  = """
                 INSERT INTO "customer"(name,email,password,is_deleted,created_date)
                 VALUES (?,?,?,?,?)
@@ -129,11 +130,11 @@ public class CustomerDaoImpl implements CustomerDao{
                 );
                  PreparedStatement pre = connection.prepareStatement(sql)
                 ){
-                    pre.setString(1,customer.getName());
-                    pre.setString(2,customer.getEmail());
-                    pre.setString(3,customer.getPassword());
-                    pre.setBoolean(4,customer.getIsDeleted());
-                    pre.setDate(5,customer.getCreatedDate());
+                    pre.setString(1,customer.name());
+                    pre.setString(2,customer.email());
+                    pre.setString(3,customer.password());
+                    pre.setBoolean(4,customer.isDeleted());
+                    pre.setDate(5,customer.createDate());
              int rowAffected  =  pre.executeUpdate();
              if(rowAffected>0){
                  System.out.println(" Insert Customer Successfully ");
